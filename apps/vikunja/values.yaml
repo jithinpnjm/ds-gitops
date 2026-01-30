@@ -1,6 +1,6 @@
 vikunja:
   # ------------------------------------------------------------
-  # Controller (bjw-s: controller)
+  # Controller (bjw-s v1.x: deployment)
   # ------------------------------------------------------------
   controller:
     enabled: true
@@ -12,16 +12,18 @@ vikunja:
   # Image
   # ------------------------------------------------------------
   image:
-    repository: ghcr.io/go-vikunja/vikunja
+    repository: vikunja/vikunja
     tag: latest
     pullPolicy: IfNotPresent
 
   # ------------------------------------------------------------
-  # Service Account (Helm-managed, patched for WI)
+  # Service Account (for Workload Identity)
   # ------------------------------------------------------------
   serviceAccount:
     create: true
     name: vikunja
+    annotations:
+      iam.gke.io/gcp-service-account: vikunja@jithin-gcp-1234.iam.gserviceaccount.com
 
   automountServiceAccountToken: true
 
@@ -42,6 +44,7 @@ vikunja:
 
   # ------------------------------------------------------------
   # Environment variables (Vikunja runtime config)
+  # NO PASSWORD - using Workload Identity for Cloud SQL
   # ------------------------------------------------------------
   env:
     VIKUNJA_DATABASE_TYPE: postgres
@@ -49,7 +52,6 @@ vikunja:
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
     VIKUNJA_DATABASE_USER: vikunja
-
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
@@ -65,7 +67,7 @@ vikunja:
       spec:
         httpGet:
           path: /api/v1/info
-          port: http
+          port: 3456
         initialDelaySeconds: 30
         periodSeconds: 10
         timeoutSeconds: 2
@@ -77,7 +79,7 @@ vikunja:
       spec:
         httpGet:
           path: /api/v1/info
-          port: http
+          port: 3456
         initialDelaySeconds: 10
         periodSeconds: 5
         timeoutSeconds: 2
@@ -111,21 +113,19 @@ vikunja:
       enabled: false
 
   # ------------------------------------------------------------
-  # Gateway API (HTTPRoute managed by ArgoCD separately OR here)
+  # ConfigMaps disabled (using env vars only)
   # ------------------------------------------------------------
-  route:
-    main:
-      enabled: false   # keep false if route is managed as a separate app
+  configMaps:
+    config:
+      enabled: false
 
   # ------------------------------------------------------------
-  # Sidecars (bjw-s: sidecars) – Cloud SQL Auth Proxy
+  # Sidecars (bjw-s v1.x) – Cloud SQL Auth Proxy
   # ------------------------------------------------------------
   sidecars:
     cloudsql-proxy:
-      image:
-        repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-        tag: "2.8.0"
-        pullPolicy: IfNotPresent
+      image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
+      imagePullPolicy: IfNotPresent
       args:
         - "--address=127.0.0.1"
         - "--port=5432"
@@ -155,10 +155,7 @@ vikunja:
     enabled: true
     minAvailable: 1
 
-  # ------------------------------------------------------------
-  # Disable configMap-based config (env-only)
-  # ------------------------------------------------------------
-  configMaps:
-    config:
-      enabled: false
-      data: {}
+# ------------------------------------------------------------
+# Additional objects (for custom resources if needed)
+# ------------------------------------------------------------
+additionalObjects: []
