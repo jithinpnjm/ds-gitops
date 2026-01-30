@@ -161,3 +161,4 @@ vikunja:
   configMaps:
     config:
       enabled: false
+      data: {}
