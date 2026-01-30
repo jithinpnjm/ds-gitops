@@ -1,15 +1,10 @@
-image:
-  repository: ghcr.io/go-vikunja/vikunja
-  tag: "latest"
-  pullPolicy: IfNotPresent
-
-serviceAccount:
-  create: ture
-  name: vikunja
-
 controllers:
   main:
     replicas: 3
+
+serviceAccount:
+  create: true
+  name: vikunja
 
 service:
   main:
@@ -62,16 +57,28 @@ podDisruptionBudget:
   enabled: true
   minAvailable: 1
 
-persistence:
-  data:
-    enabled: false
+vikunja:
+  image:
+    repository: ghcr.io/go-vikunja/vikunja
+    tag: "latest"
+    pullPolicy: IfNotPresent
 
-env:
-  VIKUNJA_SERVICE_INTERFACE: ":3456"
-  VIKUNJA_LOG_LEVEL: info
-  VIKUNJA_METRICS_ENABLED: "true"
-  VIKUNJA_MIGRATION_ENABLED: "true"
+  persistence:
+    data:
+      enabled: false
+    database:
+      enabled: false
 
-ingress:
-  main:
-    enabled: false
+  ingress:
+    main:
+      enabled: false 
+
+  env:
+    VIKUNJA_SERVICE_INTERFACE: ":3456"
+    VIKUNJA_LOG_LEVEL: info
+    VIKUNJA_METRICS_ENABLED: "true"
+    VIKUNJA_MIGRATION_ENABLED: "true"
+
+  configMaps:
+    config:
+      enabled: false 
