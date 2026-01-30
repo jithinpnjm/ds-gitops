@@ -113,11 +113,15 @@ vikunja:
       enabled: false
 
   # ------------------------------------------------------------
-  # ConfigMaps disabled (using env vars only)
+  # ConfigMaps (provide minimal config to prevent mount errors)
+  # Using env vars for actual configuration
   # ------------------------------------------------------------
   configMaps:
     config:
-      enabled: false
+      enabled: true
+      data:
+        config.yml: |
+          # Minimal config - actual configuration via environment variables
 
   # ------------------------------------------------------------
   # Sidecars (bjw-s v1.x) – Cloud SQL Auth Proxy
