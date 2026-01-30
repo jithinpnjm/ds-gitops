@@ -1,0 +1,32 @@
+K8S_VERSION="v1.33.0"   
+curl -LO "https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+sudo apt-get update
+sudo apt-get install -y git
+
+sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+
+gcloud auth login
+gcloud config set project jithin-gcp-1234
+gcloud container clusters get-credentials ds-gke-test-01 --region us-central1 --project jithin-gcp-1234
+
+
+
+
+
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm install argocd argo/argo-cd \
+  -n argocd \
+  -f argocd-values.yaml
+
+
+kubectl get svc -n argocd
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d
+
