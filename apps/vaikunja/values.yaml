@@ -1,0 +1,152 @@
+# --------------------------------------------------------------------------------
+# Global image settings
+# --------------------------------------------------------------------------------
+image:
+  repository: ghcr.io/go-vikunja/vikunja
+  tag: "latest"             # You can pin this to a released app version
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+# --------------------------------------------------------------------------------
+# ServiceAccount (we created one already in apps/vikunja)
+# --------------------------------------------------------------------------------
+serviceAccount:
+  create: false
+  name: vikunja
+
+# --------------------------------------------------------------------------------
+# Kubernetes Service
+# --------------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 3456
+
+# --------------------------------------------------------------------------------
+# Resource requests/limits
+# --------------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 150m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# --------------------------------------------------------------------------------
+# Liveness & Readiness Probes
+# Uses Vikunja API /api/v1/info
+# --------------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /api/v1/info
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/v1/info
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+# --------------------------------------------------------------------------------
+# Pod Scheduling / Topology
+# --------------------------------------------------------------------------------
+affinity: {}
+nodeSelector: {}
+tolerations: []
+topologySpreadConstraints:
+- maxSkew: 1
+  topologyKey: topology.kubernetes.io/zone
+  whenUnsatisfiable: ScheduleAnyway
+  labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: vikunja
+
+# --------------------------------------------------------------------------------
+# Pod Disruption Budget
+# --------------------------------------------------------------------------------
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# --------------------------------------------------------------------------------
+# Persistence (for files if needed)
+# --------------------------------------------------------------------------------
+persistence:
+  enabled: false
+  data:
+    existingClaim: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: ""
+
+# --------------------------------------------------------------------------------
+# Logging
+# --------------------------------------------------------------------------------
+logging:
+  enabled: true
+  level: info
+
+# --------------------------------------------------------------------------------
+# Config Maps (for Vikunja config file)
+# --------------------------------------------------------------------------------
+vikunja:
+  configMaps:
+    api-config:
+      enabled: true
+      data:
+        config.yml: |
+          service:
+            interface: ":3456"
+            frontendurl: ""            # Set later once you have a hostname
+          log:
+            level: info
+          auth:
+            local:
+              enabled: true
+          metrics:
+            enabled: true
+          migration:
+            enabled: true
+
+# --------------------------------------------------------------------------------
+# Database (external Cloud SQL)
+# This section is *placeholder*. We'll wire secrets (DB host, user/password)
+# via Secret Manager CSI in next steps.
+# --------------------------------------------------------------------------------
+postgres:
+  enabled: false         # Disable any in-chart postgres
+  host: ""
+  port: 5432
+  database: vikunja
+  user: vikunja
+  sslmode: require
+
+# --------------------------------------------------------------------------------
+# Redis cache (if you choose to enable)
+# --------------------------------------------------------------------------------
+redis:
+  enabled: false
+
+# --------------------------------------------------------------------------------
+# Ingress configuration (placeholder — gateway API preferred)
+# --------------------------------------------------------------------------------
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+
+# --------------------------------------------------------------------------------
+# Extra environment variables (e.g., for OIDC or custom overrides)
+# These will be applied directly to Vikunja container
+# --------------------------------------------------------------------------------
+extraEnv: []
