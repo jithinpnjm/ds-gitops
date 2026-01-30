@@ -6,16 +6,6 @@ metadata:
 spec:
   project: default
 
-  source:
-    repoURL: ghcr.io/go-vikunja/helm-chart
-    chart: vikunja
-    targetRevision: 2.x.x
-    helm:
-      valueFiles:
-        - values.yaml
-    directory:
-      recurse: false
-
   sources:
     - repoURL: ghcr.io/go-vikunja/helm-chart
       chart: vikunja
