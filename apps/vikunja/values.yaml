@@ -1,5 +1,3 @@
-replicaCount: 3
-
 image:
   repository: ghcr.io/go-vikunja/vikunja
   tag: "latest"
@@ -8,6 +6,10 @@ image:
 serviceAccount:
   create: false
   name: vikunja
+
+controllers:
+  main:
+    replicas: 3
 
 service:
   main:
