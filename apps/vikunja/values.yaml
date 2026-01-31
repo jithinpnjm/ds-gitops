@@ -6,26 +6,6 @@ vikunja:
       type: deployment
       replicas: 1
       revisionHistoryLimit: 3
-    containers:
-      main:
-        image:
-          repository: vikunja/vikunja
-          tag: latest
-          pullPolicy: IfNotPresent
-        command:
-          - /bin/sh
-          - -c
-          - |
-            echo "Waiting for Cloud SQL Proxy..."
-            # Loop until localhost:5432 is accepting connections
-            until nc -z 127.0.0.1 5432; do 
-              echo "  - Proxy not ready, sleeping..."
-              sleep 2
-            done
-            echo "Proxy is ready! Starting Vikunja..."
-            # Launch the actual application
-            /app/vikunja/vikunja
-
   image:
     repository: vikunja/vikunja
     tag: latest
@@ -62,7 +42,7 @@ vikunja:
     VIKUNJA_DATABASE_HOST: 127.0.0.1
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
-    VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
+    VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
