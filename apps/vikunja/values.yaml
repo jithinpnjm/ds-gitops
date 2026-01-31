@@ -137,6 +137,14 @@ vikunja:
         - "--port=5432"
         - "jithin-gcp-1234:us-central1:vikunja-production-db"
         - "--auto-iam-authn"
+        - "--health-check"
+      probes:
+        readiness:
+          httpGet:
+            path: /ready
+            port: 9090
+          initialDelaySeconds: 5
+          periodSeconds: 5
       securityContext:
         runAsNonRoot: true
       resources:
