@@ -11,45 +11,62 @@ spec:
     targetRevision: 24.x.x
     helm:
       values: |
-        # 1. Admin Credentials
-        auth:
-          adminUser: admin
-          adminPassword: "Password123!"
+        image:
+          registry: quay.io
+          repository: keycloak/keycloak
+          tag: "26.1"
+          pullPolicy: Always
 
-        # 2. External Database Configuration (Pointing to Sidecar)
+        command:
+          - "/opt/keycloak/bin/kc.sh"
+        args:
+          - "start-dev"
+          - "--import-realm"
+
+        extraEnvVars:
+          - name: KEYCLOAK_ADMIN
+            value: "admin"
+          - name: KEYCLOAK_ADMIN_PASSWORD
+            value: "Password123!"
+          - name: KC_PROXY
+            value: "edge"
+          - name: KC_HTTP_ENABLED
+            value: "true"
+          - name: KC_HOSTNAME_STRICT
+            value: "false"
+          - name: KC_DB
+            value: postgres
+          - name: KC_DB_URL
+            value: "jdbc:postgresql://127.0.0.1:5432/keycloak"
+          - name: KC_DB_USERNAME
+            value: "vikunja-cloudsql@jithin-gcp-1234.iam"
+          - name: KC_DB_PASSWORD
+            value: "dummy"
+
+        volumePermissions:
+          enabled: false
+
         postgresql:
-          enabled: false  # Disable the built-in DB
-        
-        externalDatabase:
-          host: "127.0.0.1"
-          port: 5432
-          user: "vikunja-cloudsql@jithin-gcp-1234.iam"
-          password: "empty"  # Proxy handles the auth!
-          database: "keycloak"
+          enabled: false
 
-        # 3. Expose via ClusterIP (Gateway handles Ingress)
         service:
           type: ClusterIP
           ports:
             http: 80
-        
-        # 4. Proxy/URL Settings
-        proxy: edge
-        httpRelativePath: "/auth/"
 
-        # 5. SECURITY CONTEXT (Required for Bitnami + Sidecars)
-        containerSecurityContext:
-          runAsUser: 1001
-          runAsNonRoot: true
-
-        # 6. SERVICE ACCOUNT (Reuse the Vikunja Identity!)
         serviceAccount:
           create: true
           name: keycloak-sa
           annotations:
             iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
 
-        # 7. THE SIDECAR (Cloud SQL Proxy)
+        podSecurityContext:
+          fsGroup: 1000
+
+        containerSecurityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+
         sidecars:
           - name: cloud-sql-proxy
             image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
@@ -57,7 +74,7 @@ spec:
               - "--private-ip"
               - "--address=127.0.0.1"
               - "--port=5432"
-              - "--auto-iam-authn" # The Magic Flag
+              - "--auto-iam-authn"
               - "jithin-gcp-1234:us-central1:vikunja-production-db"
             securityContext:
               runAsNonRoot: true
@@ -65,7 +82,7 @@ spec:
               requests:
                 cpu: "50m"
                 memory: "64Mi"
-  
+
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak
