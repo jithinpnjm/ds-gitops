@@ -3,6 +3,13 @@ vikunja:
 
   controllers:
     main:
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          echo "⏳ Waiting 10s for Cloud SQL Proxy..."
+          sleep 10
+          echo "🚀 Starting Vikunja..."
+          /app/vikunja/vikunja
       enabled: true
       type: deployment
       replicas: 3
