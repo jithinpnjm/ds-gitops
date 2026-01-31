@@ -1,16 +1,22 @@
 vikunja:
-  fullnameOverride: vikunja-vikunja
+  fullnameOverride: vikunja
 
   controller:
     enabled: true
     type: deployment
-    replicas: null
+    replicas: 3
     revisionHistoryLimit: 3
 
   image:
     repository: vikunja/vikunja
     tag: latest
     pullPolicy: IfNotPresent
+
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
 
   serviceAccount:
     create: true
@@ -76,13 +82,6 @@ vikunja:
       cpu: 500m
       memory: 512Mi
 
-  autoscaling:
-    enabled: true
-    minReplicas: 3
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 80
-
   persistence:
     data:
       enabled: false
@@ -93,12 +92,15 @@ vikunja:
     main:
       enabled: false
 
-  cconfig:
+  configMaps:
+    config:
       enabled: true
       data:
         config.yml: |
           service:
             interface: ":3456"
+          cors:
+            enable: false
 
   sidecars:
     cloudsql-proxy:
@@ -128,6 +130,6 @@ vikunja:
 
   podDisruptionBudget:
     enabled: true
-    minAvailable: 2
+    minAvailable: 1
 
 additionalObjects: []
