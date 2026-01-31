@@ -4,7 +4,7 @@ vikunja:
   controller:
     enabled: true
     type: deployment
-    replicas: null
+    replicas: 1
     revisionHistoryLimit: 3
 
   image:
@@ -51,6 +51,7 @@ vikunja:
     VIKUNJA_METRICS_ENABLED: "true"
     VIKUNJA_MIGRATION_ENABLED: "true"
     XDG_CACHE_HOME: /tmp/.cache
+    VIKUNJA_DATABASE_DISABLE_FULLTEXT_SEARCH: "true"
 
   probes:
     liveness:
@@ -95,7 +96,7 @@ vikunja:
       memory: 512Mi
 
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 1
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
@@ -138,7 +139,7 @@ vikunja:
         - "--auto-iam-authn"
         - "--health-check"
         - "jithin-gcp-1234:us-central1:vikunja-production-db"
-        probes:
+      probes:
         readiness:
           httpGet:
             path: /ready
@@ -165,6 +166,6 @@ vikunja:
 
   podDisruptionBudget:
     enabled: true
-    minAvailable: 2
+    minAvailable: 1
 
 additionalObjects: []
