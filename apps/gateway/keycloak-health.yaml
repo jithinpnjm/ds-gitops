@@ -1,0 +1,22 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: keycloak-health-check
+  namespace: keycloak
+spec:
+  default:
+    checkIntervalSec: 20
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 10 
+    
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 80
+        requestPath: /auth/realms/master
+  
+  targetRef:
+    group: ""
+    kind: Service
+    name: keycloak
