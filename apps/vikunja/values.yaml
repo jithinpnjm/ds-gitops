@@ -91,8 +91,9 @@ vikunja:
         httpGet:
           path: /api/v1/info
           port: 3456
+        initialDelaySeconds: 10
         failureThreshold: 60
-        periodSeconds: 5
+        periodSeconds: 2
 
   resources:
     requests:
@@ -128,21 +129,7 @@ vikunja:
             interface: ":3456"
           cors:
             enable: false
-  initContainers:
-    wait-for-proxy:
-      image: busybox:1.36
-      command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for Cloud SQL proxy to be ready..."
-          until nc -z 127.0.0.1 5432; do
-            echo "Proxy not ready yet, waiting..."
-            sleep 2
-          done
-          echo "Cloud SQL proxy is ready!"
-      securityContext:
-        runAsNonRoot: false
+
   sidecars:
     cloudsql-proxy:
       image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
