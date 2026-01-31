@@ -1,6 +1,12 @@
 vikunja:
   fullnameOverride: vikunja
 
+  controllers:
+    enabled: true
+    type: deployment
+    replicas: null
+    revisionHistoryLimit: 5
+
   image:
     repository: vikunja/vikunja
     tag: latest
