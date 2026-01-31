@@ -1,5 +1,14 @@
+psql -h 10.8.0.10 -U postgres
+eiJRJ_3eVV5Zgk):0Sz6%>rY
+
 GRANT CONNECT ON DATABASE vikunja TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 \c vikunja
+GRANT USAGE, CREATE ON SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+
+GRANT ALL PRIVILEGES ON DATABASE keycloak TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+\c keycloak
 GRANT USAGE, CREATE ON SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "vikunja-cloudsql@jithin-gcp-1234.iam";
