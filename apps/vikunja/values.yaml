@@ -8,19 +8,6 @@ vikunja:
       replicas: 1
       revisionHistoryLimit: 3
 
-      initContainers:
-        wait-for-db:
-          image: busybox:1.36
-          command:
-            - sh
-            - -c
-            - |
-              echo "Waiting for Cloud SQL Proxy..."
-              until nc -z 127.0.0.1 5432; do
-                sleep 2
-              done
-              echo "Cloud SQL Proxy is ready"
-
   image:
     repository: vikunja/vikunja
     tag: latest
@@ -36,7 +23,7 @@ vikunja:
     create: true
     name: vikunja
     annotations:
-      iam.gke.io/gcp-service-account: vikunja@jithin-gcp-1234.iam.gserviceaccount.com
+      iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
 
   automountServiceAccountToken: true
 
