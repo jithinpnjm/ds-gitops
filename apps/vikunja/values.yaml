@@ -4,7 +4,7 @@ vikunja:
   controller:
     enabled: true
     type: deployment
-    replicas: 3
+    replicas: null
     revisionHistoryLimit: 3
 
   image:
@@ -43,7 +43,7 @@ vikunja:
     VIKUNJA_DATABASE_HOST: 127.0.0.1
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
-    VIKUNJA_DATABASE_USER: vikunja
+    VIKUNJA_DATABASE_USER: vikunja@jithin-gcp-1234.iam.gserviceaccount.com
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
@@ -83,6 +83,13 @@ vikunja:
       cpu: 500m
       memory: 512Mi
 
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
   persistence:
     data:
       enabled: true
@@ -96,7 +103,7 @@ vikunja:
       enabled: false
 
   configMaps:
-    vikunja-config:
+    vaikunja-config:
       enabled: true
       data:
         config.yml: |
@@ -133,6 +140,6 @@ vikunja:
 
   podDisruptionBudget:
     enabled: true
-    minAvailable: 1
+    minAvailable: 2
 
 additionalObjects: []
