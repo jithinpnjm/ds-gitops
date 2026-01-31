@@ -1,11 +1,10 @@
 vikunja:
   fullnameOverride: vikunja
-  controllers:
-    main:
-      enabled: true
-      type: deployment
-      replicas: null
-      revisionHistoryLimit: 3
+  controller:
+    enabled: true
+    type: deployment
+    replicas: null
+    revisionHistoryLimit: 3
   image:
     repository: vikunja/vikunja
     tag: latest
@@ -93,6 +92,7 @@ vikunja:
 
   autoscaling:
     enabled: true
+    target: vikunja
     minReplicas: 3
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
