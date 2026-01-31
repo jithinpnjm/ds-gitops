@@ -42,6 +42,12 @@ spec:
             value: "vikunja-cloudsql@jithin-gcp-1234.iam"
           - name: KC_DB_PASSWORD
             value: "dummy"
+        externalDatabase:
+          host: "127.0.0.1"
+          port: 5432
+          user: "placeholder"
+          password: "dummy-password"
+          database: "keycloak"
 
         volumePermissions:
           enabled: false
