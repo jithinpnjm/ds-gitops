@@ -151,6 +151,7 @@ vikunja:
       image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
       imagePullPolicy: IfNotPresent
       args:
+        - "--private-ip"
         - "--address=127.0.0.1"
         - "--port=5432"
         - "--auto-iam-authn"
