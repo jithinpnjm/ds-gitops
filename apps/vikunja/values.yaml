@@ -43,11 +43,12 @@ vikunja:
     VIKUNJA_DATABASE_HOST: 127.0.0.1
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
-    VIKUNJA_DATABASE_USER: vikunja
+    VIKUNJA_DATABASE_USER: vikunja@jithin-gcp-1234.iam.gserviceaccount.com
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
     VIKUNJA_MIGRATION_ENABLED: "true"
+    XDG_CACHE_HOME: /tmp/.cache
 
   probes:
     liveness:
@@ -56,7 +57,7 @@ vikunja:
       spec:
         httpGet:
           path: /api/v1/info
-          port: 3456
+          port: http
         initialDelaySeconds: 30
         periodSeconds: 10
         timeoutSeconds: 2
@@ -68,7 +69,7 @@ vikunja:
       spec:
         httpGet:
           path: /api/v1/info
-          port: 3456
+          port: http
         initialDelaySeconds: 10
         periodSeconds: 5
         timeoutSeconds: 2
@@ -84,7 +85,9 @@ vikunja:
 
   persistence:
     data:
-      enabled: false
+      enabled: true
+      type: emptyDir
+      mountPath: /app/vikunja/files
     database:
       enabled: false
 
@@ -93,7 +96,7 @@ vikunja:
       enabled: false
 
   configMaps:
-    vikunja-config:
+    config:
       enabled: true
       data:
         config.yml: |
@@ -104,8 +107,10 @@ vikunja:
 
   sidecars:
     cloudsql-proxy:
-      image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
-      imagePullPolicy: IfNotPresent
+      image:
+        repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
+        tag: "2.8.0"
+        pullPolicy: IfNotPresent
       args:
         - "--address=127.0.0.1"
         - "--port=5432"
