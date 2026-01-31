@@ -12,22 +12,6 @@ vikunja:
     repository: vikunja/vikunja
     tag: latest
     pullPolicy: IfNotPresent
-  command:
-    - /bin/sh
-    - -c
-    - |
-      echo "Waiting for Cloud SQL proxy to be ready..."
-      for i in $(seq 1 30); do
-        if nc -z 127.0.0.1 5432 2>/dev/null; then
-          echo "Cloud SQL proxy is ready!"
-          break
-        fi
-        echo "Waiting for proxy... attempt $i/30"
-        sleep 2
-      done
-      echo "Starting Vikunja..."
-      exec /entrypoint.sh
-
 
   securityContext:
     runAsUser: 1000
@@ -83,7 +67,7 @@ vikunja:
         httpGet:
           path: /api/v1/info
           port: 3456
-        initialDelaySeconds: 30
+        initialDelaySeconds: 60
         periodSeconds: 10
         timeoutSeconds: 2
         failureThreshold: 3
@@ -95,7 +79,7 @@ vikunja:
         httpGet:
           path: /api/v1/info
           port: 3456
-        initialDelaySeconds: 10
+        initialDelaySeconds: 30
         periodSeconds: 5
         timeoutSeconds: 2
         failureThreshold: 3
@@ -107,7 +91,7 @@ vikunja:
         httpGet:
           path: /api/v1/info
           port: 3456
-        initialDelaySeconds: 10
+        initialDelaySeconds: 30
         failureThreshold: 60
         periodSeconds: 2
 
