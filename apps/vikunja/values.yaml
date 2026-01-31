@@ -12,7 +12,14 @@ vikunja:
     repository: vikunja/vikunja
     tag: latest
     pullPolicy: IfNotPresent
-
+  command:
+    - sh
+    - -c
+    - |
+      echo "Waiting 15 seconds for Cloud SQL proxy to start..."
+      sleep 15
+      echo "Starting Vikunja..."
+      exec /app/vikunja/vikunja
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
