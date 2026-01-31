@@ -4,7 +4,7 @@ vikunja:
     main:
       enabled: true
       type: deployment
-      replicas: 1
+      replicas: null
       revisionHistoryLimit: 3
   image:
     repository: vikunja/vikunja
@@ -95,7 +95,7 @@ vikunja:
 
   autoscaling:
     enabled: false
-    minReplicas: 1
+    minReplicas: 3
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
     targetMemoryUtilizationPercentage: 80
