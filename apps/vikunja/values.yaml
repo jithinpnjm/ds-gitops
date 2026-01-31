@@ -7,28 +7,12 @@ vikunja:
       type: deployment
       replicas: 3
       revisionHistoryLimit: 3
-    containers:
-      main:
-        command:
-        - /bin/sh
-        - '-c'
-        - |
-          echo "Waiting for Cloud SQL proxy to be ready..."
-          for i in $(seq 1 30); do
-            if nc -z 127.0.0.1 5432 2>/dev/null; then
-              echo "Cloud SQL proxy is ready!"
-              break
-            fi
-            echo "Waiting for proxy... attempt $i/30"
-            sleep 2
-          done
-          echo "Starting Vikunja..."
-          exec /entrypoint.sh
+
   image:
     repository: vikunja/vikunja
     tag: latest
     pullPolicy: IfNotPresent
-  
+
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
