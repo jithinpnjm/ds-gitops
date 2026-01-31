@@ -1,0 +1,10 @@
+nonMasqueradeCIDRs:
+  - 192.168.35.0/24
+  - 192.168.36.0/25
+masqLinkLocal: false
+resyncInterval: 60s
+
+
+kubectl create configmap ip-masq-agent \
+   --namespace=kube-system \
+   --from-file=config=ipmasq
