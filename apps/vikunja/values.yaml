@@ -14,7 +14,6 @@ vikunja:
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
-    fsGroup: 1000
     runAsNonRoot: true
 
   serviceAccount:
@@ -43,7 +42,6 @@ vikunja:
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
     VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam
-    VIKUNJA_DATABASE_PASSWORD: ""
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
@@ -138,13 +136,6 @@ vikunja:
         - "--auto-iam-authn"
         - "--health-check"
         - "jithin-gcp-1234:us-central1:vikunja-production-db"
-      probes:
-        readiness:
-          httpGet:
-            path: /ready
-            port: 9090
-          initialDelaySeconds: 5
-          periodSeconds: 5
       securityContext:
         runAsNonRoot: true
       resources:
