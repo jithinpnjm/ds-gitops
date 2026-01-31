@@ -1,6 +1,13 @@
 vikunja:
   fullnameOverride: vikunja
-
+  args:
+    - /bin/sh
+    - -c
+    - |
+      echo "Waiting for Cloud SQL Proxy..."
+      until nc -z 127.0.0.1 5432; do sleep 2; done
+      echo "Proxy ready. Launching..."
+      /app/vikunja/vikunja
   controllers:
     main:
       enabled: true
@@ -45,14 +52,12 @@ vikunja:
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
     VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
-    VIKUNJA_DATABASE_PASSWORD: ""
-    VIKUNJA_DATABASE_SSLMODE: require
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
     VIKUNJA_MIGRATION_ENABLED: "true"
     XDG_CACHE_HOME: /tmp/.cache
-    VIKUNJA_DATABASE_DISABLE_FULLTEXT_SEARCH: "true"
+
 
   probes:
     liveness:
