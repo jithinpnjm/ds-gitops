@@ -1,0 +1,3 @@
+gcloud iam service-accounts add-iam-policy-binding vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:jithin-gcp-1234.svc.id.goog[keycloak/keycloak-sa]"

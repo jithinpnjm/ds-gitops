@@ -25,15 +25,26 @@ spec:
           adminUser: admin
           adminPassword: "Password123!"
 
-        # --- FIX: OVERRIDE CACHE SETTINGS ---
+        # --- FIXES APPLIED HERE ---
         extraEnvVars:
+          # 1. Force Plaintext DB Connection (Critical for Sidecar)
+          - name: KC_DB_URL
+            value: "jdbc:postgresql://127.0.0.1:5432/keycloak?sslmode=disable"
+          
+          # 2. Required Cache Settings
           - name: KC_CACHE
             value: "ispn"
           - name: KC_CACHE_STACK
             value: "kubernetes"
+          
+          # 3. Proxy & Feature Settings
           - name: KC_PROXY
             value: "edge"
-        # ------------------------------------
+          - name: KC_HOSTNAME_STRICT
+            value: "false"
+          - name: KC_HTTP_ENABLED
+            value: "true"
+        # --------------------------
 
         service:
           type: ClusterIP
