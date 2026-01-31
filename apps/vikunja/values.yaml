@@ -1,9 +1,9 @@
 vikunja:
   fullnameOverride: vikunja
 
-  controllers:
+  controller  :
     enabled: true
-    type: deployment
+    kind: Deployment
     replicas: null
     revisionHistoryLimit: 5
 
