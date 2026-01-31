@@ -135,10 +135,10 @@ vikunja:
       args:
         - "--address=127.0.0.1"
         - "--port=5432"
-        - "jithin-gcp-1234:us-central1:vikunja-production-db"
         - "--auto-iam-authn"
         - "--health-check"
-      probes:
+        - "jithin-gcp-1234:us-central1:vikunja-production-db"
+        probes:
         readiness:
           httpGet:
             path: /ready
