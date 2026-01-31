@@ -11,6 +11,9 @@ spec:
     - matches:
         - path:
             type: PathPrefix
+            value: /auth/openid
+        - path:
+            type: PathPrefix
             value: /
       backendRefs:
         - name: vikunja
