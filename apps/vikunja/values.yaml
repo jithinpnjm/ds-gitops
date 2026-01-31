@@ -5,137 +5,37 @@ vikunja:
     main:
       enabled: true
       type: deployment
+      replicas: 3
       revisionHistoryLimit: 3
+    containers:
+      main:
+        dependsOn: 
+        - cloudsql-proxy
+  image:
+    repository: vikunja/vikunja
+    tag: latest
+    pullPolicy: IfNotPresent
+  
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
 
-      containers:
-        main:
-          image:
-            repository: vikunja/vikunja
-            tag: latest
-            pullPolicy: IfNotPresent
-
-          dependsOn:
-            - cloudsql-proxy
-
-          env:
-            VIKUNJA_DATABASE_TYPE: postgres
-            VIKUNJA_DATABASE_HOST: 127.0.0.1
-            VIKUNJA_DATABASE_PORT: "5432"
-            VIKUNJA_DATABASE_DATABASE: vikunja
-            VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam
-            VIKUNJA_SERVICE_INTERFACE: ":3456"
-            VIKUNJA_LOG_LEVEL: info
-            VIKUNJA_METRICS_ENABLED: "true"
-            VIKUNJA_MIGRATION_ENABLED: "true"
-            XDG_CACHE_HOME: /tmp/.cache
-            VIKUNJA_SERVICE_JWTSECRET: "AMN10CW4TBhmy7oQwD8ol+ry7p/dRwvX9FzxpBcQzn0"
-            VIKUNJA_AUTH_OPENID_ENABLED: "true"
-            VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME: "Keycloak"
-            VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: "http://35.190.33.137/auth/realms/vikunja"
-            VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTID: "vikunja-app"
-            VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTSECRET: "VikunjaSecret2026!"
-
-          probes:
-            liveness:
-              enabled: true
-              custom: true
-              spec:
-                httpGet:
-                  path: /api/v1/info
-                  port: 3456
-                initialDelaySeconds: 60
-                periodSeconds: 10
-                timeoutSeconds: 2
-                failureThreshold: 3
-
-            readiness:
-              enabled: true
-              custom: true
-              spec:
-                httpGet:
-                  path: /api/v1/info
-                  port: 3456
-                initialDelaySeconds: 30
-                periodSeconds: 5
-                timeoutSeconds: 2
-                failureThreshold: 3
-
-            startup:
-              enabled: true
-              custom: true
-              spec:
-                httpGet:
-                  path: /api/v1/info
-                  port: 3456
-                initialDelaySeconds: 30
-                failureThreshold: 60
-                periodSeconds: 2
-
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-
-        cloudsql-proxy:
-          image:
-            repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-            tag: "2.8.0"
-            pullPolicy: IfNotPresent
-          
-          args:
-            - "--private-ip"
-            - "--address=127.0.0.1"
-            - "--port=5432"
-            - "--auto-iam-authn"
-            - "--health-check"
-            - "jithin-gcp-1234:us-central1:vikunja-production-db"
-          
-          securityContext:
-            runAsNonRoot: true
-          
-          resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 256Mi
-
-      pod:
-        securityContext:
-          fsGroup: 1000
-        
-        topologySpreadConstraints:
-          - maxSkew: 1
-            topologyKey: topology.kubernetes.io/zone
-            whenUnsatisfiable: ScheduleAnyway
-            labelSelector:
-              matchLabels:
-                app.kubernetes.io/name: vikunja
-
-  podDisruptionBudget:
-    main:
-      enabled: true
-      minAvailable: 2
+  podSecurityContext:
+    fsGroup: 1000
 
   serviceAccount:
-    default:
-      enabled: true
-      annotations:
-        iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
+    create: true
+    name: vikunja
+    annotations:
+      iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
+
+  automountServiceAccountToken: true
 
   service:
     main:
       enabled: true
-      controller: main
+      primary: true
       type: ClusterIP
       ports:
         http:
@@ -144,12 +44,73 @@ vikunja:
           port: 3456
           protocol: HTTP
 
+  env:
+    VIKUNJA_DATABASE_TYPE: postgres
+    VIKUNJA_DATABASE_HOST: 127.0.0.1
+    VIKUNJA_DATABASE_PORT: "5432"
+    VIKUNJA_DATABASE_DATABASE: vikunja
+    VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam
+    VIKUNJA_SERVICE_INTERFACE: ":3456"
+    VIKUNJA_LOG_LEVEL: info
+    VIKUNJA_METRICS_ENABLED: "true"
+    VIKUNJA_MIGRATION_ENABLED: "true"
+    XDG_CACHE_HOME: /tmp/.cache
+    VIKUNJA_SERVICE_JWTSECRET: "AMN10CW4TBhmy7oQwD8ol+ry7p/dRwvX9FzxpBcQzn0"
+    VIKUNJA_AUTH_OPENID_ENABLED: "true"
+    VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME: "Keycloak"
+    VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: "http://35.190.33.137/auth/realms/vikunja"
+    VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTID: "vikunja-app"
+    VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTSECRET: "VikunjaSecret2026!"
+
+  probes:
+    liveness:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 2
+        failureThreshold: 3
+
+    readiness:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 30
+        periodSeconds: 5
+        timeoutSeconds: 2
+        failureThreshold: 3
+
+    startup:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 30
+        failureThreshold: 60
+        periodSeconds: 2
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
   persistence:
     data:
       enabled: true
       type: emptyDir
-      globalMounts:
-        - path: /app/vikunja/files
+      mountPath: /app/vikunja/files
     tmp:
       enabled: true
       type: emptyDir
@@ -171,6 +132,39 @@ vikunja:
             interface: ":3456"
           cors:
             enable: false
+
+  sidecars:
+    cloudsql-proxy:
+      image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
+      imagePullPolicy: IfNotPresent
+      args:
+        - "--private-ip"
+        - "--address=127.0.0.1"
+        - "--port=5432"
+        - "--auto-iam-authn"
+        - "--health-check"
+        - "jithin-gcp-1234:us-central1:vikunja-production-db"
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: vikunja
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 2
 
 additionalObjects:
   - apiVersion: autoscaling/v2
