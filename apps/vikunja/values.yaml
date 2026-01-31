@@ -43,7 +43,7 @@ vikunja:
     VIKUNJA_DATABASE_HOST: 127.0.0.1
     VIKUNJA_DATABASE_PORT: "5432"
     VIKUNJA_DATABASE_DATABASE: vikunja
-    VIKUNJA_DATABASE_USER: vikunja@jithin-gcp-1234.iam.gserviceaccount.com
+    VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
     VIKUNJA_SERVICE_INTERFACE: ":3456"
     VIKUNJA_LOG_LEVEL: info
     VIKUNJA_METRICS_ENABLED: "true"
@@ -74,6 +74,15 @@ vikunja:
         periodSeconds: 5
         timeoutSeconds: 2
         failureThreshold: 3
+    startup:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        failureThreshold: 30
+        periodSeconds: 5
 
   resources:
     requests:
@@ -95,6 +104,11 @@ vikunja:
       enabled: true
       type: emptyDir
       mountPath: /app/vikunja/files
+    tmp:
+      enabled: true
+      type: emptyDir
+      globalMounts:
+        - path: /tmp
     database:
       enabled: false
 
