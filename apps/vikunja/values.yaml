@@ -1,11 +1,13 @@
 vikunja:
   fullnameOverride: vikunja
+
   controllers:
     main:
       enabled: true
       type: deployment
       replicas: null
       revisionHistoryLimit: 3
+
   image:
     repository: vikunja/vikunja
     tag: latest
@@ -15,6 +17,9 @@ vikunja:
     runAsUser: 1000
     runAsGroup: 1000
     runAsNonRoot: true
+
+  podSecurityContext:
+    fsGroup: 1000
 
   serviceAccount:
     create: true
@@ -48,7 +53,6 @@ vikunja:
     VIKUNJA_MIGRATION_ENABLED: "true"
     XDG_CACHE_HOME: /tmp/.cache
 
-
   probes:
     liveness:
       enabled: true
@@ -73,6 +77,7 @@ vikunja:
         periodSeconds: 5
         timeoutSeconds: 2
         failureThreshold: 3
+
     startup:
       enabled: true
       custom: true
@@ -149,7 +154,7 @@ vikunja:
 
   podDisruptionBudget:
     enabled: true
-    minAvailable: 1
+    minAvailable: 2
 
 additionalObjects:
   - apiVersion: autoscaling/v2
