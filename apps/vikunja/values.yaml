@@ -1,5 +1,5 @@
 vikunja:
-  fullnameOverride: vikunja
+  fullnameOverride: vikunja-vikunja
 
   controller:
     enabled: true
@@ -93,8 +93,7 @@ vikunja:
     main:
       enabled: false
 
-  configMaps:
-    api-config:
+  cconfig:
       enabled: true
       data:
         config.yml: |
