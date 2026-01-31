@@ -12,66 +12,45 @@ spec:
     helm:
       values: |
         image:
-          registry: quay.io
-          repository: keycloak/keycloak
-          tag: "26.1"
-          pullPolicy: Always
+          registry: docker.io
+          repository: bitnamilegacy/keycloak
+          tag: "25.0.1-debian-12-r2"
+          pullPolicy: IfNotPresent
 
-        command:
-          - "/opt/keycloak/bin/kc.sh"
-        args:
-          - "start-dev"
-          - "--import-realm"
-
-        extraEnvVars:
-          - name: KEYCLOAK_ADMIN
-            value: "admin"
-          - name: KEYCLOAK_ADMIN_PASSWORD
-            value: "Password123!"
-          - name: KC_PROXY
-            value: "edge"
-          - name: KC_HTTP_ENABLED
-            value: "true"
-          - name: KC_HOSTNAME_STRICT
-            value: "false"
-          - name: KC_DB
-            value: postgres
-          - name: KC_DB_URL
-            value: "jdbc:postgresql://127.0.0.1:5432/keycloak"
-          - name: KC_DB_USERNAME
-            value: "vikunja-cloudsql@jithin-gcp-1234.iam"
-          - name: KC_DB_PASSWORD
-            value: "dummy"
-        externalDatabase:
-          host: "127.0.0.1"
-          port: 5432
-          user: "placeholder"
-          password: "dummy-password"
-          database: "keycloak"
-
-        volumePermissions:
-          enabled: false
-
-        postgresql:
-          enabled: false
+        auth:
+          adminUser: admin
+          adminPassword: "Password123!"
 
         service:
           type: ClusterIP
           ports:
             http: 80
 
+        proxy: edge
+        httpRelativePath: "/auth/"
+
+        postgresql:
+          enabled: false
+
+        externalDatabase:
+          host: "127.0.0.1"
+          port: 5432
+          user: "vikunja-cloudsql@jithin-gcp-1234.iam"
+          password: "dummy-password"
+          database: "keycloak"
+
+        podSecurityContext:
+          fsGroup: 1001
+
+        containerSecurityContext:
+          runAsUser: 1001
+          runAsNonRoot: true
+
         serviceAccount:
           create: true
           name: keycloak-sa
           annotations:
             iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
-
-        podSecurityContext:
-          fsGroup: 1000
-
-        containerSecurityContext:
-          runAsUser: 1000
-          runAsNonRoot: true
 
         sidecars:
           - name: cloud-sql-proxy
