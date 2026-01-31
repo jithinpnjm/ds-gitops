@@ -25,6 +25,16 @@ spec:
           adminUser: admin
           adminPassword: "Password123!"
 
+        # --- FIX: OVERRIDE CACHE SETTINGS ---
+        extraEnvVars:
+          - name: KC_CACHE
+            value: "ispn"
+          - name: KC_CACHE_STACK
+            value: "kubernetes"
+          - name: KC_PROXY
+            value: "edge"
+        # ------------------------------------
+
         service:
           type: ClusterIP
           ports:
