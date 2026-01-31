@@ -51,6 +51,7 @@ vikunja:
     VIKUNJA_METRICS_ENABLED: "true"
     VIKUNJA_MIGRATION_ENABLED: "true"
     XDG_CACHE_HOME: /tmp/.cache
+    VIKUNJA_SERVICE_JWTSECRET: "AMN10CW4TBhmy7oQwD8ol+ry7p/dRwvX9FzxpBcQzn0"
 
   probes:
     liveness:
