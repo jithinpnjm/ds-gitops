@@ -1,10 +1,19 @@
 vikunja:
   fullnameOverride: vikunja
-  controller:
-    enabled: true
-    type: deployment
-    replicas: null
-    revisionHistoryLimit: 3
+  controllers:
+    main:
+      enabled: true
+      type: deployment
+      replicas: null
+      revisionHistoryLimit: 3
+      autoscaling:
+        enabled: true
+        minReplicas: 3
+        maxReplicas: 10
+        cpu:
+          targetAverageUtilization: 70
+        memory:
+          targetAverageUtilization: 80
   image:
     repository: vikunja/vikunja
     tag: latest
@@ -89,14 +98,6 @@ vikunja:
     limits:
       cpu: 500m
       memory: 512Mi
-
-  autoscaling:
-    enabled: true
-    target: vikunja
-    minReplicas: 3
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 80
 
   persistence:
     data:
