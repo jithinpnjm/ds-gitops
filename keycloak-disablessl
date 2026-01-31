@@ -1,0 +1,14 @@
+kubectl exec -n keycloak keycloak-0 -- /opt/bitnami/keycloak/bin/kcadm.sh config credentials \
+  --server http://localhost:8080/auth \
+  --realm master \
+  --user admin \
+  --password Password123! \
+  --config /tmp/kcadm.config
+
+kubectl exec -n keycloak keycloak-0 -- /opt/bitnami/keycloak/bin/kcadm.sh update realms/master \
+  -s sslRequired=NONE \
+  --config /tmp/kcadm.config
+
+kubectl exec -n keycloak keycloak-0 -- /opt/bitnami/keycloak/bin/kcadm.sh update realms/vikunja \
+  -s sslRequired=NONE \
+  --config /tmp/kcadm.config

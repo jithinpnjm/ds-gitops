@@ -7,8 +7,13 @@ GRANT USAGE, CREATE ON SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 
-GRANT ALL PRIVILEGES ON DATABASE keycloak TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+
 \c keycloak
+
+GRANT CONNECT ON DATABASE keycloak TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+
 GRANT USAGE, CREATE ON SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "vikunja-cloudsql@jithin-gcp-1234.iam";
