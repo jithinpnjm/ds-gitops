@@ -5,6 +5,12 @@ metadata:
   namespace: argocd
 spec:
   project: default
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    name: vikunja
+    jsonPointers:
+    - /spec/replicas
 
   sources:
     - repoURL: ghcr.io/go-vikunja/helm-chart
