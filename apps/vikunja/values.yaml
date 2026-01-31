@@ -5,8 +5,8 @@ vikunja:
     main:
       enabled: true
       type: deployment
-      replicas: 3
-      revisionHistoryLimit: 3
+      replicas: null
+      revisionHistoryLimit: 5
 
   image:
     repository: vikunja/vikunja
