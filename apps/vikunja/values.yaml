@@ -6,7 +6,18 @@ vikunja:
     type: deployment
     replicas: 1
     revisionHistoryLimit: 3
-
+    initContainers:
+      wait-for-db:
+        image: busybox:1.36
+        command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for Cloud SQL Proxy..."
+            until nc -z 127.0.0.1 5432; do
+              sleep 2
+            done
+            echo "Cloud SQL Proxy is ready"
   image:
     repository: vikunja/vikunja
     tag: latest
