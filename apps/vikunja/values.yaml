@@ -103,7 +103,7 @@ vikunja:
       enabled: false
 
   configMaps:
-    vaikunja-config:
+    vikunja-config:
       enabled: true
       data:
         config.yml: |
