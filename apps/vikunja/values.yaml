@@ -4,7 +4,7 @@ vikunja:
   controller  :
     enabled: true
     kind: Deployment
-    replicas: null
+    replicas: 3
     revisionHistoryLimit: 5
 
   image:
