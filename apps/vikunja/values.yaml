@@ -1,11 +1,11 @@
 vikunja:
   # ------------------------------------------------------------
-  # Controller (bjw-s v1.x: deployment)
+  # Controller - Set replicas to null when using HPA
   # ------------------------------------------------------------
   controller:
     enabled: true
     type: deployment
-    replicas: 3
+    replicas: null  # HPA will manage replica count
     revisionHistoryLimit: 3
 
   # ------------------------------------------------------------
@@ -28,7 +28,7 @@ vikunja:
   automountServiceAccountToken: true
 
   # ------------------------------------------------------------
-  # Service (ClusterIP – Gateway API will target this)
+  # Service (ClusterIP)
   # ------------------------------------------------------------
   service:
     main:
@@ -43,8 +43,7 @@ vikunja:
           protocol: HTTP
 
   # ------------------------------------------------------------
-  # Environment variables (Vikunja runtime config)
-  # NO PASSWORD - using Workload Identity for Cloud SQL
+  # Environment variables (PostgreSQL via Cloud SQL)
   # ------------------------------------------------------------
   env:
     VIKUNJA_DATABASE_TYPE: postgres
@@ -58,7 +57,7 @@ vikunja:
     VIKUNJA_MIGRATION_ENABLED: "true"
 
   # ------------------------------------------------------------
-  # Probes (custom, HTTP-based)
+  # Probes
   # ------------------------------------------------------------
   probes:
     liveness:
@@ -86,18 +85,28 @@ vikunja:
         failureThreshold: 3
 
   # ------------------------------------------------------------
-  # Resources
+  # Resources (REQUIRED for HPA to work)
   # ------------------------------------------------------------
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 100m      # Required for CPU-based autoscaling
+      memory: 256Mi  # Required for memory-based autoscaling
     limits:
       cpu: 500m
       memory: 512Mi
 
   # ------------------------------------------------------------
-  # Persistence (disabled – Cloud SQL used)
+  # Horizontal Pod Autoscaler (HPA)
+  # ------------------------------------------------------------
+  autoscaling:
+    enabled: true
+    minReplicas: 3              # Minimum number of pods
+    maxReplicas: 10             # Maximum number of pods
+    targetCPUUtilizationPercentage: 70      # Scale when CPU > 70%
+    targetMemoryUtilizationPercentage: 80   # Scale when Memory > 80%
+
+  # ------------------------------------------------------------
+  # Persistence (disabled – using Cloud SQL)
   # ------------------------------------------------------------
   persistence:
     data:
@@ -106,15 +115,14 @@ vikunja:
       enabled: false
 
   # ------------------------------------------------------------
-  # Ingress disabled (Gateway API used)
+  # Ingress (disabled – using Gateway API)
   # ------------------------------------------------------------
   ingress:
     main:
       enabled: false
 
   # ------------------------------------------------------------
-  # ConfigMaps (provide minimal config to prevent mount errors)
-  # Using env vars for actual configuration
+  # ConfigMaps (minimal - using env vars)
   # ------------------------------------------------------------
   configMaps:
     config:
@@ -124,7 +132,7 @@ vikunja:
           # Minimal config - actual configuration via environment variables
 
   # ------------------------------------------------------------
-  # Sidecars (bjw-s v1.x) – Cloud SQL Auth Proxy
+  # Sidecars - Cloud SQL Auth Proxy
   # ------------------------------------------------------------
   sidecars:
     cloudsql-proxy:
@@ -145,7 +153,7 @@ vikunja:
           memory: 256Mi
 
   # ------------------------------------------------------------
-  # Scheduling & HA
+  # Topology Spread (for HA across zones)
   # ------------------------------------------------------------
   topologySpreadConstraints:
     - maxSkew: 1
@@ -155,11 +163,14 @@ vikunja:
         matchLabels:
           app.kubernetes.io/name: vikunja
 
+  # ------------------------------------------------------------
+  # Pod Disruption Budget (for HA)
+  # ------------------------------------------------------------
   podDisruptionBudget:
     enabled: true
-    minAvailable: 1
+    minAvailable: 2  # Keep at least 2 pods running during disruptions
 
 # ------------------------------------------------------------
-# Additional objects (for custom resources if needed)
+# Additional objects
 # ------------------------------------------------------------
 additionalObjects: []
