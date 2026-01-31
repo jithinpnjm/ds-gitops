@@ -1,21 +1,17 @@
-fullnameOverride: vikunja
-
-controllers:
-  main:
-    enabled: true
-    type: deployment
-    replicas: 1
-    revisionHistoryLimit: 3
-    
+vikunja:
+  fullnameOverride: vikunja
+  controllers:
+    main:
+      enabled: true
+      type: deployment
+      replicas: 1
+      revisionHistoryLimit: 3
     containers:
       main:
         image:
           repository: vikunja/vikunja
           tag: latest
           pullPolicy: IfNotPresent
-
-        # --- FIX: USE 'command' TO OVERRIDE ENTRYPOINT ---
-        # This prevents the "unknown command" error and handles the race condition.
         command:
           - /bin/sh
           - -c
@@ -30,157 +26,163 @@ controllers:
             # Launch the actual application
             /app/vikunja/vikunja
 
-        env:
-          VIKUNJA_DATABASE_TYPE: postgres
-          VIKUNJA_DATABASE_HOST: 127.0.0.1
-          VIKUNJA_DATABASE_PORT: "5432"
-          VIKUNJA_DATABASE_DATABASE: vikunja
-          # --- FIX: MATCH GSA FROM SCRIPT ---
-          VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
-          VIKUNJA_DATABASE_PASSWORD: ""
-          # --- FIX: DISABLE SSL FOR LOCALHOST ---
-          VIKUNJA_DATABASE_SSLMODE: disable
-          VIKUNJA_SERVICE_INTERFACE: ":3456"
-          VIKUNJA_LOG_LEVEL: info
-          VIKUNJA_METRICS_ENABLED: "true"
-          VIKUNJA_MIGRATION_ENABLED: "true"
-          XDG_CACHE_HOME: /tmp/.cache
-          VIKUNJA_DATABASE_DISABLE_FULLTEXT_SEARCH: "true"
+  image:
+    repository: vikunja/vikunja
+    tag: latest
+    pullPolicy: IfNotPresent
 
-        # Probes
-        probes:
-          liveness:
-            enabled: true
-            custom: true
-            spec:
-              httpGet:
-                path: /api/v1/info
-                port: 3456
-              initialDelaySeconds: 30
-              periodSeconds: 10
-              timeoutSeconds: 2
-              failureThreshold: 3
-          readiness:
-            enabled: true
-            custom: true
-            spec:
-              httpGet:
-                path: /api/v1/info
-                port: 3456
-              initialDelaySeconds: 10
-              periodSeconds: 5
-              timeoutSeconds: 2
-              failureThreshold: 3
-          startup:
-            enabled: true
-            custom: true
-            spec:
-              httpGet:
-                path: /api/v1/info
-                port: 3456
-              failureThreshold: 30
-              periodSeconds: 5
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
 
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-        
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-          runAsNonRoot: true
+  serviceAccount:
+    create: true
+    name: vikunja
+    annotations:
+      iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
 
-serviceAccount:
-  create: true
-  name: vikunja
-  annotations:
-    # --- FIX: MATCH GSA FROM SCRIPT ---
-    iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
+  automountServiceAccountToken: true
 
-service:
-  main:
-    enabled: true
-    primary: true
-    type: ClusterIP
-    ports:
-      http:
-        enabled: true
-        primary: true
-        port: 3456
-        protocol: HTTP
+  service:
+    main:
+      enabled: true
+      primary: true
+      type: ClusterIP
+      ports:
+        http:
+          enabled: true
+          primary: true
+          port: 3456
+          protocol: HTTP
 
-persistence:
-  data:
-    enabled: true
-    type: emptyDir
-    mountPath: /app/vikunja/files
-  tmp:
-    enabled: true
-    type: emptyDir
-    globalMounts:
-      - path: /tmp
-  database:
-    enabled: false
+  env:
+    VIKUNJA_DATABASE_TYPE: postgres
+    VIKUNJA_DATABASE_HOST: 127.0.0.1
+    VIKUNJA_DATABASE_PORT: "5432"
+    VIKUNJA_DATABASE_DATABASE: vikunja
+    VIKUNJA_DATABASE_USER: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
+    VIKUNJA_SERVICE_INTERFACE: ":3456"
+    VIKUNJA_LOG_LEVEL: info
+    VIKUNJA_METRICS_ENABLED: "true"
+    VIKUNJA_MIGRATION_ENABLED: "true"
+    XDG_CACHE_HOME: /tmp/.cache
 
-# Cloud SQL Proxy Sidecar
-sidecars:
-  cloudsql-proxy:
-    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
-    imagePullPolicy: IfNotPresent
-    args:
-      - "--address=127.0.0.1"
-      - "--port=5432"
-      - "--auto-iam-authn"
-      - "--health-check"
-      # Ensure this matches your GCP project:region:instance
-      - "jithin-gcp-1234:us-central1:vikunja-production-db"
-    probes:
-      readiness:
+
+  probes:
+    liveness:
+      enabled: true
+      custom: true
+      spec:
         httpGet:
-          path: /ready
-          port: 9090
-        initialDelaySeconds: 5
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 2
+        failureThreshold: 3
+
+    readiness:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 10
         periodSeconds: 5
-    securityContext:
-      runAsNonRoot: true
-    resources:
-      requests:
-        cpu: 50m
-        memory: 64Mi
-      limits:
-        cpu: 200m
-        memory: 256Mi
+        timeoutSeconds: 2
+        failureThreshold: 3
+    startup:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        failureThreshold: 30
+        periodSeconds: 5
 
-# Clean up other components we don't need
-ingress:
-  main:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  autoscaling:
     enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
 
-configMaps:
-  vikunja-config:
-    enabled: true
+  persistence:
     data:
-      config.yml: |
-        service:
-          interface: ":3456"
-        cors:
-          enable: false
+      enabled: true
+      type: emptyDir
+      mountPath: /app/vikunja/files
+    tmp:
+      enabled: true
+      type: emptyDir
+      globalMounts:
+        - path: /tmp
+    database:
+      enabled: false
 
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: topology.kubernetes.io/zone
-    whenUnsatisfiable: ScheduleAnyway
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: vikunja
+  ingress:
+    main:
+      enabled: false
 
-podDisruptionBudget:
-  enabled: true
-  minAvailable: 1
+  configMaps:
+    vikunja-config:
+      enabled: true
+      data:
+        config.yml: |
+          service:
+            interface: ":3456"
+          cors:
+            enable: false
 
-postgresql:
-  enabled: false
+  sidecars:
+    cloudsql-proxy:
+      image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
+      imagePullPolicy: IfNotPresent
+      args:
+        - "--address=127.0.0.1"
+        - "--port=5432"
+        - "--auto-iam-authn"
+        - "--health-check"
+        - "jithin-gcp-1234:us-central1:vikunja-production-db"
+      probes:
+        readiness:
+          httpGet:
+            path: /ready
+            port: 9090
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: vikunja
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+additionalObjects: []
