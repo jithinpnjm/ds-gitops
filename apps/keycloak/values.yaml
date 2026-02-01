@@ -22,6 +22,21 @@ metrics:
     path: /auth/metrics
     interval: 30s
     scrapeTimeout: 10s
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /auth/health/ready
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /auth/health/live
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 20
 # -----------------------------------
 
 extraEnvVars:
