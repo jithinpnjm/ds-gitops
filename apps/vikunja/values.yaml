@@ -5,7 +5,7 @@ vikunja:
     enabled: true
     kind: Deployment
     replicas: 3
-    strategy:
+    strategy: RollingUpdate
     rollingUpdate:
       unavailable: 25%
       surge: 25%
