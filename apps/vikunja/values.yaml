@@ -7,8 +7,8 @@ vikunja:
     replicas: 3
     strategy:
       rollingUpdate:
-        unavailable:1
-        surge:1
+        unavailable: 1
+        surge: 1
 
     revisionHistoryLimit: 5
 
