@@ -5,10 +5,10 @@ vikunja:
     enabled: true
     kind: Deployment
     replicas: 3
-    strategy:
+    strategy: RollingUpdate
       rollingUpdate:
-        unavailable: 1
-        surge: 1
+        maxUnavailable: 1
+        maxSurge: 1
 
     revisionHistoryLimit: 5
 
