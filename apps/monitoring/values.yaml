@@ -30,7 +30,6 @@ grafana:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/default
-
   dashboards:
     default:
       k8s-cluster-overview:

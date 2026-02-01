@@ -64,9 +64,9 @@ echo "[3/5] Configuring Database User Mapping..."
 # We check if the user exists in the instance to avoid errors
 if ! gcloud sql users list --instance="${INSTANCE_NAME}" --format="value(name)" | grep -q "${DB_USER_SHORT}"; then
   echo "   - Creating IAM User in Cloud SQL instance..."
-  gcloud sql users create "${GSA_EMAIL}" \
+  gcloud sql users create "${DB_USER_SHORT}" \
     --instance="${INSTANCE_NAME}" \
-    --type=cloud_iam_service_account
+    --type=CLOUD_IAM_SERVICE_ACCOUNT
 else
   echo "   - Cloud SQL User '${DB_USER_SHORT}' already exists."
 fi
