@@ -33,6 +33,14 @@ grafana:
 
   dashboards:
     default:
+      keycloak:
+        gnetId: 14390
+        revision: 1
+        datasource: Prometheus
+      vikunja-go:
+        gnetId: 21928
+        revision: 1
+        datasource: Prometheus
       k8s-cluster-overview:
         gnetId: 6417
         revision: 1
