@@ -14,4 +14,4 @@ spec:
         value: /grafana
     backendRefs:
     - name: monitoring-grafana
-      port: 3000
+      port: 80
