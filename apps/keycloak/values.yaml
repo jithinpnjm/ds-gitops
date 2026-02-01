@@ -19,6 +19,7 @@ metrics:
     namespace: monitoring 
     labels:
       release: monitoring 
+    path: /auth/metrics
     interval: 30s
     scrapeTimeout: 10s
 # -----------------------------------
