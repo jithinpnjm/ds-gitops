@@ -1,13 +1,15 @@
 vikunja:
   fullnameOverride: vikunja
 
-  controller  :
+  controller:
     enabled: true
     kind: Deployment
     replicas: 3
-    rollingUpdate:
-      unavailable: 1
-      surge: 1
+    updateStrategy:
+      type: RollingUpdate
+        rollingUpdate:
+         maxUnavailable: 20% 
+         maxSurge: 20%
 
     revisionHistoryLimit: 5
 
