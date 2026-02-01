@@ -1,0 +1,50 @@
+grafana:
+  adminPassword: "admin"
+  
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana"
+      serve_from_sub_path: true
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+  dashboards:
+    default:
+      keycloak:
+        gnetId: 19659
+        revision: 1
+        datasource: Prometheus
+      vikunja-go:
+        gnetId: 10826
+        revision: 1
+        datasource: Prometheus
+      k8s-cluster-overview:
+        gnetId: 6417
+        revision: 1
+        datasource: Prometheus
+      k8s-pods:
+        gnetId: 6336
+        revision: 1
+        datasource: Prometheus
+      node-exporter-full:
+        gnetId: 1860
+        revision: 37
+        datasource: Prometheus
+defaultRules:
+  create: true

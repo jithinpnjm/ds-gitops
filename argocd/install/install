@@ -15,9 +15,6 @@ gcloud config set project jithin-gcp-1234
 gcloud container clusters get-credentials ds-gke-test-01 --region us-central1 --project jithin-gcp-1234
 
 
-
-
-
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 

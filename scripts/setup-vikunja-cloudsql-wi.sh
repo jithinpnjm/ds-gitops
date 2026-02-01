@@ -95,21 +95,3 @@ kubectl patch serviceaccount "${KSA_NAME}" \
     }
   }"
 
-# -------------------------------
-# SUMMARY & NEXT STEPS
-# -------------------------------
-echo
-echo "----------------------------------------------------"
-echo "✅ INFRASTRUCTURE SETUP COMPLETE"
-echo "----------------------------------------------------"
-echo "IMPORTANT: Update your values.yaml with the SHORT username:"
-echo
-echo "env:"
-echo "  VIKUNJA_DATABASE_USER: \"${DB_USER_SHORT}\""
-echo "  VIKUNJA_DATABASE_PASSWORD: \"empty\""
-echo "sidecars:"
-echo "  cloudsql-proxy:"
-echo "    args:"
-echo "      - \"--auto-iam-authn\""
-echo
-echo "Make sure to run your SQL GRANT statements manually inside the DB!"

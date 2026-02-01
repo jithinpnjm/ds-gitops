@@ -1,0 +1,87 @@
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: docker.io
+  repository: bitnamilegacy/keycloak
+  tag: "26.3.3-debian-12-r0"
+  pullPolicy: IfNotPresent
+
+auth:
+  adminUser: admin
+  adminPassword: "Password123!"
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring 
+    labels:
+      release: monitoring 
+    interval: 30s
+    scrapeTimeout: 10s
+# -----------------------------------
+
+extraEnvVars:
+  - name: KC_METRICS_ENABLED
+    value: "true"
+  - name: KC_DB_URL
+    value: "jdbc:postgresql://127.0.0.1:5432/keycloak?sslmode=disable"
+  - name: KC_CACHE
+    value: "ispn"
+  - name: KC_CACHE_STACK
+    value: "kubernetes"
+  - name: KC_PROXY
+    value: "edge"
+  - name: KC_HOSTNAME_STRICT
+    value: "false"
+  - name: KC_HTTP_ENABLED
+    value: "true"
+
+service:
+  type: ClusterIP
+  ports:
+    http: 80
+
+proxy: edge
+httpRelativePath: "/auth/"
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: "127.0.0.1"
+  port: 5432
+  user: "vikunja-cloudsql@jithin-gcp-1234.iam"
+  password: "dummy-password"
+  database: "keycloak"
+
+podSecurityContext:
+  fsGroup: 1001
+
+containerSecurityContext:
+  runAsUser: 1001
+  runAsNonRoot: true
+
+serviceAccount:
+  create: true
+  name: keycloak-sa
+  annotations:
+    iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
+
+sidecars:
+  - name: cloud-sql-proxy
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
+    args:
+      - "--private-ip"
+      - "--address=127.0.0.1"
+      - "--port=5432"
+      - "--auto-iam-authn"
+      - "jithin-gcp-1234:us-central1:vikunja-production-db"
+    securityContext:
+      runAsNonRoot: true
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"

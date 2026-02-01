@@ -1,4 +1,8 @@
-psql -h 10.8.0.10 -U postgres
+gcloud sql users set-password postgres \
+    --instance=vikunja-production-db \
+    --password='eiJRJ_3eVV5Zgk):0Sz6%>rY'
+
+psql -h 10.8.0.13 -U postgres
 eiJRJ_3eVV5Zgk):0Sz6%>rY
 
 GRANT CONNECT ON DATABASE vikunja TO "vikunja-cloudsql@jithin-gcp-1234.iam";

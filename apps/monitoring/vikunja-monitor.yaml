@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vikunja-monitor
+  namespace: monitoring 
+  labels:
+    release: monitoring 
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vikunja 
+  namespaceSelector:
+    matchNames:
+      - vikunja 
+  endpoints:
+    - port: http
+      path: /api/v1/metrics
+      interval: 15s
