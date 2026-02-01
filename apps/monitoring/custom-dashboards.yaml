@@ -1,0 +1,463 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-dashboards
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  vikunja.json: |
+    {
+      "__inputs": [],
+      "annotations": { "list": [] },
+      "description": "Vikunja Task Manager Dashboard",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 100,
+          "title": "Overview",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "red", "value": 100 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+          "id": 1,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Active Users",
+          "type": "stat",
+          "targets": [{ "expr": "vikunja_active_users", "legendFormat": "Active Users" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 100 },
+                  { "color": "red", "value": 500 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+          "id": 2,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Total Tasks",
+          "type": "stat",
+          "targets": [{ "expr": "vikunja_task_count", "legendFormat": "Tasks" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 20 },
+                  { "color": "red", "value": 50 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+          "id": 3,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Total Projects",
+          "type": "stat",
+          "targets": [{ "expr": "vikunja_project_count", "legendFormat": "Projects" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 10 },
+                  { "color": "red", "value": 30 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+          "id": 4,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Total Teams",
+          "type": "stat",
+          "targets": [{ "expr": "vikunja_team_count", "legendFormat": "Teams" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 100 },
+                  { "color": "red", "value": 500 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+          "id": 5,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Total Users",
+          "type": "stat",
+          "targets": [{ "expr": "vikunja_user_count", "legendFormat": "Users" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "red", "value": 200 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+          "id": 6,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Total Attachments",
+          "type": "stat",
+          "targets": [{ "expr": "vikunja_attachments_count", "legendFormat": "Attachments" }]
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 101,
+          "title": "Trends",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" } } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+          "id": 7,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "Tasks & Projects Over Time",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "vikunja_task_count", "legendFormat": "Tasks" },
+            { "expr": "vikunja_project_count", "legendFormat": "Projects" }
+          ]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" } } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+          "id": 8,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "Users & Teams Over Time",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "vikunja_active_users", "legendFormat": "Active Users" },
+            { "expr": "vikunja_user_count", "legendFormat": "Total Users" },
+            { "expr": "vikunja_team_count", "legendFormat": "Teams" }
+          ]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" } } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+          "id": 9,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "Files & Attachments Over Time",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "vikunja_files_count", "legendFormat": "Files" },
+            { "expr": "vikunja_attachments_count", "legendFormat": "Attachments" }
+          ]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" } } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+          "id": 10,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "Link Shares Over Time",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "vikunja_active_link_shares", "legendFormat": "Active Link Shares" }
+          ]
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "style": "dark",
+      "tags": ["vikunja"],
+      "templating": { "list": [] },
+      "time": { "from": "now-6h", "to": "now" },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Vikunja",
+      "uid": "vikunja-dashboard",
+      "version": 1
+    }
+  keycloak.json: |
+    {
+      "__inputs": [],
+      "annotations": { "list": [] },
+      "description": "Keycloak IAM Dashboard",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 200,
+          "title": "JVM Overview",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "bytes",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 500000000 },
+                  { "color": "red", "value": 1000000000 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+          "id": 201,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "JVM Heap Used",
+          "type": "stat",
+          "targets": [{ "expr": "jvm_memory_used_bytes{area=\"heap\"}", "legendFormat": "Heap Used" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "bytes",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 1000000000 },
+                  { "color": "red", "value": 2000000000 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+          "id": 202,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "JVM Heap Max",
+          "type": "stat",
+          "targets": [{ "expr": "jvm_memory_max_bytes{area=\"heap\"}", "legendFormat": "Heap Max" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "short",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 100 },
+                  { "color": "red", "value": 200 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+          "id": 203,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Live Threads",
+          "type": "stat",
+          "targets": [{ "expr": "jvm_threads_live_threads", "legendFormat": "Live Threads" }]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "short",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "red", "value": 100 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+          "id": 204,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Loaded Classes",
+          "type": "stat",
+          "targets": [{ "expr": "jvm_classes_loaded_classes", "legendFormat": "Classes" }]
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 205,
+          "title": "Memory",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "bytes" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+          "id": 206,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "JVM Memory Usage",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "jvm_memory_used_bytes", "legendFormat": "{{area}} Used" },
+            { "expr": "jvm_memory_committed_bytes", "legendFormat": "{{area}} Committed" },
+            { "expr": "jvm_memory_max_bytes", "legendFormat": "{{area}} Max" }
+          ]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "bytes" } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+          "id": 207,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "JVM GC Memory",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "rate(jvm_gc_memory_allocated_bytes_total[5m])", "legendFormat": "Allocated/s" },
+            { "expr": "rate(jvm_gc_memory_promoted_bytes_total[5m])", "legendFormat": "Promoted/s" }
+          ]
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+          "id": 208,
+          "title": "GC & Threads",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "s" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+          "id": 209,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "GC Pause Duration",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "rate(jvm_gc_pause_seconds_sum[5m])", "legendFormat": "GC Pause Rate" },
+            { "expr": "jvm_gc_pause_seconds_max", "legendFormat": "GC Pause Max" }
+          ]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short" } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+          "id": 210,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "JVM Threads",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "jvm_threads_live_threads", "legendFormat": "Live" },
+            { "expr": "jvm_threads_daemon_threads", "legendFormat": "Daemon" },
+            { "expr": "jvm_threads_peak_threads", "legendFormat": "Peak" }
+          ]
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+          "id": 211,
+          "title": "Keycloak",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+          "id": 212,
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+          "title": "Password Hashing Validations",
+          "type": "timeseries",
+          "targets": [
+            { "expr": "rate(keycloak_credentials_password_hashing_validations_total[5m])", "legendFormat": "Validations/s" }
+          ]
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "s",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 3600 },
+                  { "color": "red", "value": 86400 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+          "id": 213,
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+          "title": "Keycloak Uptime",
+          "type": "stat",
+          "targets": [{ "expr": "base_jvm_uptime", "legendFormat": "Uptime" }]
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "style": "dark",
+      "tags": ["keycloak", "iam"],
+      "templating": { "list": [] },
+      "time": { "from": "now-6h", "to": "now" },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Keycloak",
+      "uid": "keycloak-dashboard",
+      "version": 1
+    }
