@@ -2,6 +2,9 @@ gcloud sql users set-password postgres \
     --instance=vikunja-production-db \
     --password='eiJRJ_3eVV5Zgk):0Sz6%>rY'
 
+gcloud sql users create "vikunja-cloudsql@jithin-gcp-1234.iam" \
+    --instance=vikunja-production-db \
+    --type=CLOUD_IAM_SERVICE_ACCOUNT
 psql -h 10.8.0.13 -U postgres
 eiJRJ_3eVV5Zgk):0Sz6%>rY
 
@@ -21,3 +24,22 @@ GRANT USAGE, CREATE ON SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vikunja-cloudsql@jithin-gcp-1234.iam";
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "vikunja-cloudsql@jithin-gcp-1234.iam";
+
+========================
+DROP ROLE:
+========================
+-- 1. Connect to vikunja and clear default privileges
+\c vikunja
+ALTER DEFAULT PRIVILEGES IN SCHEMA public FOR ROLE postgres REVOKE ALL ON TABLES FROM "vikunja-cloudsql@jithin-gcp-1234.iam";
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM "vikunja-cloudsql@jithin-gcp-1234.iam";
+REVOKE ALL ON SCHEMA public FROM "vikunja-cloudsql@jithin-gcp-1234.iam";
+
+-- 2. Connect to keycloak and clear default privileges
+\c keycloak
+ALTER DEFAULT PRIVILEGES IN SCHEMA public FOR ROLE postgres REVOKE ALL ON TABLES FROM "vikunja-cloudsql@jithin-gcp-1234.iam";
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM "vikunja-cloudsql@jithin-gcp-1234.iam";
+REVOKE ALL ON SCHEMA public FROM "vikunja-cloudsql@jithin-gcp-1234.iam";
+
+-- 3. Move back to postgres db and drop
+\c postgres
+DROP USER "vikunja-cloudsql@jithin-gcp-1234.iam";
