@@ -71,7 +71,7 @@ vikunja:
         httpGet:
           path: /api/v1/info
           port: 3456
-        initialDelaySeconds: 120
+        initialDelaySeconds: 240
         periodSeconds: 10
         timeoutSeconds: 2
         failureThreshold: 3
