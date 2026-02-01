@@ -13,5 +13,5 @@ spec:
         type: PathPrefix
         value: /grafana
     backendRefs:
-    - name: monitoring-grafana # The service name created by Helm
+    - name: monitoring-grafana
       port: 80

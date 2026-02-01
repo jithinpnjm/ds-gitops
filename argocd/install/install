@@ -17,7 +17,7 @@ gcloud container clusters get-credentials ds-gke-test-01 --region us-central1 --
 
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
-
+kubectl create ns argocd
 helm install argocd argo/argo-cd \
   -n argocd \
   -f argocd-values.yaml
