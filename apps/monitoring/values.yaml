@@ -1,6 +1,13 @@
 grafana:
   adminPassword: "admin"
-  
+  readinessProbe:
+    httpGet:
+      path: /grafana/api/health 
+      port: 3000
+  livenessProbe:
+    httpGet:
+      path: /grafana/api/health
+      port: 3000
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana"
