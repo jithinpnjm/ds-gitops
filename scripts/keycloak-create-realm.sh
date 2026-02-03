@@ -23,7 +23,7 @@ kubectl exec -n keycloak keycloak-0 -- /bin/bash -c '
     -s publicClient=false \
     -s directAccessGrantsEnabled=true \
     -s standardFlowEnabled=true \
-    -s "redirectUris=[\"http://35.190.33.137/*\"]" \
+    -s "redirectUris=[\"http://http://34.50.155.115//*\"]" \
     -s "webOrigins=[\"*\"]" \
     -s secret="VikunjaSecret2026!" \
     --config /tmp/kcadm.config
@@ -32,6 +32,6 @@ kubectl exec -n keycloak keycloak-0 -- /bin/bash -c '
   echo "✅ SUCCESS!"
   echo "Client ID:     vikunja-app"
   echo "Client Secret: VikunjaSecret2026!"
-  echo "Realm URL:     http://35.190.33.137/auth/realms/vikunja"
+  echo "Realm URL:     http://http://34.50.155.115//auth/realms/vikunja"
   echo "----------------------------------------------"
 '
