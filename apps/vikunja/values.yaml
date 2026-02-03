@@ -9,7 +9,6 @@ vikunja:
     rollingUpdate:
       unavailable: 25%
       surge: 25%
-
     revisionHistoryLimit: 5
 
   image:
@@ -21,7 +20,6 @@ vikunja:
     runAsUser: 1000
     runAsGroup: 1000
     runAsNonRoot: true
-
   podSecurityContext:
     fsGroup: 1000
 
@@ -30,7 +28,6 @@ vikunja:
     name: vikunja
     annotations:
       iam.gke.io/gcp-service-account: vikunja-cloudsql@jithin-gcp-1234.iam.gserviceaccount.com
-
   automountServiceAccountToken: true
 
   service:
@@ -59,7 +56,7 @@ vikunja:
     VIKUNJA_SERVICE_JWTSECRET: "AMN10CW4TBhmy7oQwD8ol+ry7p/dRwvX9FzxpBcQzn0"
     VIKUNJA_AUTH_OPENID_ENABLED: "true"
     VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME: "Keycloak"
-    VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: "http://35.190.33.137/auth/realms/vikunja"
+    VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: "http://34.50.155.115/auth/realms/vikunja"
     VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTID: "vikunja-app"
     VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTSECRET: "VikunjaSecret2026!"
 
