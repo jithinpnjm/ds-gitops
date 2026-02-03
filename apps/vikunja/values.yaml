@@ -75,7 +75,6 @@ vikunja:
     readiness:
       enabled: true
       custom: true
-      type: null
       spec:
         exec:
           command:
