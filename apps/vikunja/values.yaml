@@ -9,43 +9,6 @@ vikunja:
       unavailable: 25%
       surge: 25%
     revisionHistoryLimit: 5
-    probes:
-      liveness:
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /api/v1/info
-            port: 3456
-          initialDelaySeconds: 120
-          periodSeconds: 10
-          timeoutSeconds: 2
-          failureThreshold: 3
-      readiness:
-        enabled: true
-        custom: true
-        spec:
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - |
-                wget -qO- http://127.0.0.1:9090/health >/dev/null && \
-                wget -qO- http://127.0.0.1:3456/api/v1/info >/dev/null
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-      startup:
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /api/v1/info
-            port: 3456
-          initialDelaySeconds: 30
-          failureThreshold: 60
-          periodSeconds: 2
 
   image:
     repository: vikunja/vikunja
@@ -95,6 +58,48 @@ vikunja:
     VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: "http://34.50.155.115/auth/realms/vikunja"
     VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTID: "vikunja-app"
     VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTSECRET: "VikunjaSecret2026!"
+
+  probes:
+    liveness:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        timeoutSeconds: 2
+        failureThreshold: 3
+
+    readiness:
+      enabled: true
+      custom: true
+      type: EXEC
+      spec:
+        exec:
+          command:
+            - /bin/sh
+            - -c
+            - |
+              wget -qO- http://127.0.0.1:9090/health >/dev/null && \
+              wget -qO- http://127.0.0.1:3456/api/v1/info >/dev/null
+        initialDelaySeconds: 30
+        periodSeconds: 5
+        timeoutSeconds: 3
+        failureThreshold: 3
+
+
+    startup:
+      enabled: true
+      custom: true
+      spec:
+        httpGet:
+          path: /api/v1/info
+          port: 3456
+        initialDelaySeconds: 30
+        failureThreshold: 60
+        periodSeconds: 2
 
   resources:
     requests:
