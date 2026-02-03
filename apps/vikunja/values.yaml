@@ -84,6 +84,7 @@ vikunja:
             - |
               wget -qO- http://127.0.0.1:9090/health >/dev/null && \
               wget -qO- http://127.0.0.1:3456/api/v1/info >/dev/null
+        httpGet: null
         initialDelaySeconds: 30
         periodSeconds: 5
         timeoutSeconds: 3
